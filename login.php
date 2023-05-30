@@ -1,32 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="style2.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Авторизация</h1>
-        <?php
-        session_start();
-        if (isset($_SESSION['error'])) {
-            echo '<div class="error">' . htmlspecialchars($_SESSION['error']) . '</div>';
-            unset($_SESSION['error']);
-        }
-        ?>
-        <form action="login_subm.php" method="POST" id="form">
-            <label for="login">Логин:</label>
-            <input type="text" name="login" id="login" required>
- 
-            <label for="password">Пароль:</label>
-            <input type="password" name="password" id="password" required>
- 
-            <input type="submit" value="Войти"> <br/>
-            <a href="form.php" class="auth-button">To index</a>
-        </form>
-    </div>
-</body>
-</html>
+<?php
+
+/**
+ * Файл login.php для не авторизованного пользователя выводит форму логина.
+ * При отправке формы проверяет логин/пароль и создает сессию,
+ * записывает в нее логин и id пользователя.
+ * После авторизации пользователь перенаправляется на главную страницу
+ * для изменения ранее введенных данных.
+ **/
+
+header('Content-Type: text/html; charset=UTF-8');
+
+// Начинаем сессию.
+session_start();
+
+$db_user = 'u52989';   // Логин БД
+$db_pass = '5004286';  // Пароль БД
+
+// В суперглобальном массиве $_SERVER PHP сохраняет некторые заголовки запроса HTTP
+// и другие сведения о клиненте и сервере, например метод текущего запроса $_SERVER['REQUEST_METHOD'].
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+    if(isset($_GET['do'])&&$_GET['do'] == 'logout'){
+    session_start();    
+    session_unset();
+    session_destroy();
+    //setcookie("PHPSESSID", "", 1);
+    setcookie ("PHPSESSID", "", time() - 3600, '/');
+    header("Location: index.php");
+    exit;}
+?>
+
+<form action="" method="post">
+  <p><label for="login">Логин </label><input name="login" /></p>
+  <p><label for="pass">Пароль </label><input name="pass" /></p>
+  <input type="submit" value="Войти" />
+</form>
+
+<?php
+}
+// Иначе, если запрос был методом POST, т.е. нужно сделать авторизацию с записью логина в сессию.
+else {
+
+  $login = $_POST['login'];
+  $pass =  $_POST['pass'];
+
+  $db = new PDO('mysql:host=localhost;dbname=u47567', $db_user, $db_pass, array(
+    PDO::ATTR_PERSISTENT => true
+  ));
+
+  try {
+    $stmt = $db->prepare("SELECT * FROM users5 WHERE login = ?");
+    $stmt->execute(array(
+      $login
+    ));
+    // Получаем данные в виде массива из БД.
+    $user = $stmt->fetch();
+    // Сравнием текущий хэш пароля с тем, что достали из базы.
+    if (password_verify($pass, $user['pass'])) {
+      // Если он верныйы, то записываем логин в сессию.
+      $_SESSION['login'] = $login;
+    }
+    else {
+      echo "Неправильный логин или пароль";
+      exit();
+    }
+
+  }
+  catch(PDOException $e) {
+    echo 'Ошибка: ' . $e->getMessage();
+    exit();
+  }
+  header('Location: ./');
+}
