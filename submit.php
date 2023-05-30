@@ -162,7 +162,7 @@ $_SESSION['data'] = [
             $id_power = $stmt->fetchColumn();
  
             $stmt2 = $db->prepare("INSERT INTO namepower (id_person, id_power) VALUES (?, ?)");
-            $stmt2->execute([$last_index, $id_power]);
+            $stmt2->execute([$user_id, $id_power]);
             }
             
             $_SESSION['login'] = $login;
