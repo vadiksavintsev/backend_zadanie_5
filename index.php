@@ -52,18 +52,18 @@
             <label><input type="radio" checked="checked" name="limbs" id="limbs" value="1" <?= getChecked('limbs', '1') ?>> 1</label>
             <label><input type="radio" name="limbs" id="limbs" value="2" <?= getChecked('limbs', '2') ?>> 2</label>
             <label><input type="radio" name="limbs" id="limbs" value="3" <?= getChecked('limbs', '3') ?>> 3</label>
-            <label><input type="radio" name="limbs" id="limbs" value="3" <?= getChecked('limbs', '3') ?>> 4</label>
+            <label><input type="radio" name="limbs" id="limbs" value="4" <?= getChecked('limbs', '4') ?>> 4</label>
             <label for="abilities">Сверхспособности:</label>
             <select name="power[]" id="power" multiple>
-                 <option value="invisibility" <?= getSelected('powers', 'invisibility') ?>>Невидимость</option>
-                    <option value="stoppingtime" <?= getSelected('powers', 'stoppingtime') ?>>Остановка времени</option>
-                    <option value="ignition" <?= getSelected('powers', 'ignition') ?>>Воспламенение</option>
-                    <option value="elements" <?= getSelected('powers', 'elements') ?>>Управление стихиями</option>
+                 <option value="invisibility" <?= getSelected('power', 'invisibility') ?>>Невидимость</option>
+                    <option value="stoppingtime" <?= getSelected('power', 'stoppingtime') ?>>Остановка времени</option>
+                    <option value="ignition" <?= getSelected('power', 'ignition') ?>>Воспламенение</option>
+                    <option value="elements" <?= getSelected('power', 'elements') ?>>Управление стихиями</option>
                </select>
             <?php if (!empty($messages['abilities'])) {print($messages['abilities']);}?>
 
             <label for="biography">Биография:</label>
-            <textarea name="biography" id="biography"><?= getFieldValue('bio') ?></textarea>
+            <textarea name="biography" id="biography"><?= getFieldValue('biography') ?></textarea>
 
             <label>
                 <input type="checkbox" name="contract" value="accepted" <?= getChecked('contract', 'accepted') ?>> С контрактом ознакомлен
