@@ -1,99 +1,71 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
-    <meta charset="utf-8">
-    <title>Человеческие сверхспособности</title>
-    <link rel="stylesheet" href="style.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+	<title>Web5</title>
 </head>
-
 <body>
-    <?php include 'index.php'; ?>
-    <header>
-        <div id="название">
-            <h1>Сверхспособности</h1>
-        </div>
-    </header>
-    <div class="container">
-    <?php
-        if (isset($_SESSION['errors']) && !empty($_SESSION['errors'])) {
-            echo '<div class="errors">';
-            foreach ($_SESSION['errors'] as $error) {
-                echo '<p>' . $error . '</p>';
-            }
-            echo '</div>';
-        } elseif (isset($_COOKIE['name'])) {
-            echo '<div class="success">';
-            echo '<p>Форма успешно отправлена</p>';
-            echo '</div>';
-        }
-        ?>
-        <form action="index.php" method="POST" id="form">
-            <label>
-                Введите имя:<br>
-                <?= showError('name') ?>
-                <input name="name" type="text" id="name" placeholder="Введите имя" value="<?= getFieldValue('name') ?>"/><br>
-            </label>
-            <label>
-                Адрес электронной почты:<br>
-                <?= showError('email') ?>
-                <input name="email" type="email" placeholder="Введите email" value="<?= getFieldValue('email') ?>"/><br>
-            </label>
-            <label for="year">Год рождения</label>
-            <?= showError('year') ?>
-            <select name="year" id="year">
-                <option value="<?= getSelected('year', "") ?>">Выберите год</option>
-            </select>
-            <br>
-            Выберите пол:<br>
-            <?= showError('gender') ?>
-            <label><input type="radio" name="gender" value="female" <?= getChecked('gender', 'female') ?>/>
-            Женский</label>
-            <label><input type="radio" name="gender" value="male" <?= getChecked('gender', 'male') ?>/>
-            Мужской</label>
-            <br>
-            Количество конечностей:<br>
-            <?= showError('limbs') ?>
-            <label><input type="radio" name="limbs" value="1" <?= getChecked('limbs', '1') ?>/>
-                1</label>
-            <label><input type="radio" name="limbs" value="2" <?= getChecked('limbs', '2') ?>/>
-                2</label>
-            <label><input type="radio" name="limbs" value="3" <?= getChecked('limbs', '3') ?>/>
-                3</label>
-            <label><input type="radio" name="limbs" value="4" <?= getChecked('limbs', '4') ?>/>
-                4</label>
-            <label>
-                <br>
-                Сверхспособности:<br>
-                <select name="powers[]" id="powers" multiple="multiple">
-                    <option value="invisibility" <?= getSelected('powers', 'invisibility') ?>>Невидимость</option>
-                    <option value="stoppingtime" <?= getSelected('powers', 'stoppingtime') ?>>Остановка времени</option>
-                    <option value="ignition" <?= getSelected('powers', 'ignition') ?>>Воспламенение</option>
-                    <option value="elements" <?= getSelected('powers', 'elements') ?>>Управление стихиями</option>
-                </select>
-                <?php if (!empty($messages['powers'])) {print($messages['powers']);}?>
-                <br>
-                Биография:<br>
-                <textarea name="biography" id="biography" placeholder="Напишите о себе"><?= getFieldValue('biography') ?></textarea><br>
-                <label><input type="checkbox" name="check_kontrol" value="accepted" <?= getChecked('check_kontrol', 'accepted') ?>/>
-                    с контрактом ознакомлен(а)</label>
-                <br>
-                <input type="submit" class="submit" value="Отправить" />
-        </form>
-        <script>
-              const select = document.getElementById('year');
-              const currentYear = new Date().getFullYear();
-              for (let i = currentYear; i >= currentYear - 100; i--) {
-                  const option = document.createElement('option');
-                  option.value = i;
-                  option.text = i;
-                  if(i == <?= isset($_COOKIE['year']) ? $_COOKIE['year'] : '""' ?>) 
-                     {
-                     option.selected = true; // выбираем этот элемент, если год сохранен в куке
-                     }
-                  select.add(option);
-}
+	<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-5 border-bottom shadow-sm " style="background-color: white;">
+		<h1>Форма</h1>
+	</div>
+	<?php 
+		if (!empty($messages)) {
+			if(isset($messages['save'])) print('<div id="messages" class="ok">'); else print('<div id="messages">');
+			foreach ($messages as $message) {
+				print($message);
+			}
+		  print('</div>');
+		}
+	?>
+	<div class="container">
+		<form action="" method="POST">
+			<p><label for="name" style="color: #de530e;">Имя</label>
+			<input name="name" <?php if (!empty($errors['name'])) print 'class="error"'; ?> <?php if(empty($errors['name'])&&!empty($values['name'])) print 'class="ok"';?> value="<?php isset($_COOKIE['name_error'])? print trim($_COOKIE['name_error']) : print $values['name']; ?>"> </p>
 
-    </script>
-    </div>
+			<p><label for="email" style="color: #de530e;">E-mail</label>
+			<input type="text" id="email" name="email" <?php if(!empty($errors['email']))  print 'class="error"';?> <?php if(empty($errors['email'])&&!empty($values['email'])) print 'class="ok"';?> value="<?php isset($_COOKIE['email_error'])? print trim($_COOKIE['email_error']) : print $values['email']; ?>"> </p>
+			
+			<p><label for="year" style="color: #de530e;">Год рождения</label>
+			<select id="year" name="year" <?php if(!empty($errors['year']))  print 'class="error"';?> <?php if(empty($errors['year'])&&!empty($values['year'])) print 'class="ok"';?>>
+				<option selected ><?php !empty($values['year']) ? print ($values['year']) : print '' ?></option>
+				<?php 
+					for ($i = 1923; $i <= 2023; $i++)
+						echo '<option>' . $i . '</option>';
+				?>
+			</select>
+			
+			<p><label <?php if(!empty($errors['gender'])) print 'class="error_check"'?>style="color: #de530e;">Пол:</label>
+			<input type="radio" id="male" value="male" name="gender" <?php if (isset($values['gender'])&&$values['gender'] == 'male') print("checked"); ?>>Мужской
+			<input type="radio" id="female" value="female" name="gender" <?php if (isset($values['gender'])&&$values['gender'] == 'female') print("checked"); ?>>Женский</p>
+
+			<p><label <?php if(isset($_COOKIE['kon_error'])) print 'class="error_check"'?>style="color: #de530e;">Количество конечностей:</label>
+			<input type="radio" id="1" name="kon" value='1'<?php if (isset($values['kon'])&&$values['kon'] == '1') print("checked"); ?>>1
+			<input type="radio" id="2" name="kon" value='2'<?php if (isset($values['kon'])&&$values['kon'] == '2') print("checked"); ?>>2
+			<input type="radio" id="3" name="kon" value='3'<?php if (isset($values['kon'])&&$values['kon'] == '3') print("checked"); ?>>3
+			<input type="radio" id="4" name="kon" value='4'<?php if (isset($values['kon'])&&$values['kon'] == '4') print("checked"); ?>>4</p>
+			
+			<p><label <?php if(!empty($errors['super'])) print 'class="error_check"'?> style="color: #de530e;">Сверхспособности:</label>
+			<!-- выводим способности прямо из бд-->
+			<?php
+				$sql = 'SELECT * FROM SuperDef';
+				foreach ($db->query($sql) as $row) {
+					?><input type="checkbox" value=<?php print $row['id']?> name=super[] <?php if(isset($values['super'][$row['id']])&&empty($_COOKIE['super_error']))print("checked"); print "\t"; ?>> 
+					<?php print $row['name'] . "\t";
+				}
+			?>
+			<p><label for="bio" style="color: #de530e;">Биография</label>
+			<textarea id="bio" name="bio" <?php if(!empty($errors['bio']))  print 'class="error"';?> <?php if(empty($errors['bio'])&&!empty($values['bio'])) print 'class="ok"';?>><?php isset($_COOKIE['bio_error']) ? print trim($_COOKIE['bio_error']) : print $values['bio'] ?></textarea>
+			
+			<p><label <?php if(!empty($errors['contr_check'])) print 'class="error_check"'?> style="color: #de530e;">С контрактом ознакомлен:</label>
+			<input type="checkbox" id="contr_check" name="contr_check" value="contr_check" <?php if (isset($values['contr_check'])&&$values['contr_check'] == 'contr_check') print("checked"); ?>></p>
+			
+			<p><button type="submit" value="send">Отправить</button></p>
+
+		</form>
+		<?php if(!empty($_COOKIE[session_name()]) && !empty($_SESSION['login'])) print( '<div id="footer">Вход с логином ' . $_SESSION["login"]. '<br> <a href=login.php?do=logout> Выход</a><br></div>');?>
+	</div>
 </body>
+</html>
